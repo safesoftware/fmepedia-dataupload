@@ -1,0 +1,88 @@
+<!-- 	Title: Using the jsessionid with the data upload service
+		Description: The jsessionid lets you explicitly specify the session ID of a request URL.
+		This specification ensures that the correct session state is preserved for a session when 
+		cookies do not work properly or are not available.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script> 
+    	<script src="http://malsup.github.com/jquery.form.js"></script> 
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+		<title>File Upload</title>
+
+		<script>
+
+		$(document).ready(function(){
+
+			fullForm.init();
+
+		});
+
+		var fullForm = {
+			sessionID : '',
+			uploadedFileList : null,
+			workspacePath : 'Samples/easyTranslator.fmw',
+			url : 'bd-lkdesktop/fmedataupload/',
+
+			init : function(){
+				this.sessionID = this.getSessionID();
+
+				$('#file_upload_form').ajaxForm({
+					url : 'http://' + this.url + this.workspacePath +';jsessionid=' + this.sessionID + '?opt_fullpath=true', 
+					type : 'POST',
+					dataType : 'json',
+					success : function(response){
+						$('#uploadedList').empty();
+						if (response.serviceResponse.files.file != undefined){
+							//gets info about regular files that have been uploaded
+							fullForm.updateList(response.serviceResponse.files.file);							
+						}
+						if (response.serviceResponse.files.archive != undefined) {
+							//gets info about zip files that have been uploaded
+							fullForm.updateList(response.serviceResponse.files.archive);
+						}
+					}
+				});
+			},
+
+			getSessionID : function(){
+				var id = null; 
+				$.ajax({
+					url : 'http://' + this.url + this.workspacePath,
+					async : false,
+					type : 'POST',
+					dataType : 'json',
+					success : function(response){
+						id = response.serviceResponse.session;
+					}
+				});
+				return id;
+			},
+
+			updateList : function(fileList){
+				//display uploaded files and their paths in the browser to 
+				//show it can be done :)
+				for (each in fileList){
+					$('#uploadedList').append('<div>Name: ' + fileList[each].name + '</div>');
+					$('#uploadedList').append('<div>Path: ' + fileList[each].path + '</div>');
+				};
+			}
+		};
+
+		</script>
+	</head>
+
+	<body >
+		<form id="file_upload_form" >
+			<input name="file" id="file" size="27" type="file" />
+			<br />
+			<input type="submit" name="action" value="Upload" />
+		</form>
+		<br/>
+		<h3>All Uploaded Files:</h3>
+		<div id='uploadedList'>
+		</div>
+	</body>
+</html>
