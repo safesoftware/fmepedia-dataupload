@@ -10,7 +10,7 @@
     	<script src="http://malsup.github.com/jquery.form.js"></script> 
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-		<title>File Upload</title>
+		<title>File Upload Demo</title>
 
 		<script>
 
@@ -63,7 +63,6 @@
 
 			updateList : function(fileList){
 				//display uploaded files and their paths in the browser to 
-				//show it can be done :)
 				for (each in fileList){
 					$('#uploadedList').append('<div>Name: ' + fileList[each].name + '</div>');
 					$('#uploadedList').append('<div>Path: ' + fileList[each].path + '</div>');
