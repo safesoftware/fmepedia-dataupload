@@ -17,22 +17,18 @@
 
 		$(document).ready(function(){
 
-			FMEServer.init({
-				server : fullForm.host,
-				token : fullForm.token
-			});
-			
-			//Call server and get the session ID and path
-			FMEServer.getSession(fullForm.repository, fullForm.workspace, function(json){
-				fullForm.session = json.serviceResponse.session;
-				fullForm.path = json.serviceResponse.files.folder[0].path;
-			});
-
+			$.getJSON("http://demos.fmeserver.com.s3.amazonaws.com/server-demo-config.json", function(config) {
+        FMEServer.init(config.initObject);
+        
+        //Call server and get the session ID and path
+        FMEServer.getSession(fullForm.repository, fullForm.workspace, function(json){
+          fullForm.session = json.serviceResponse.session;
+          fullForm.path = json.serviceResponse.files.folder[0].path;
+        });
+      });
 		});
 
 		var fullForm = {
-			host : 'https://fmepedia2014-safe-software.fmecloud.com',
-			token : 'fb1c3ee6828e6814c75512dd4770a02e73d913b8',
 			session : null,
 			path : null,
 			uploadedFileList : null,
